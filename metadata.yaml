@@ -1,0 +1,7 @@
+name: openchat # 这是你的插件的唯一识别名。
+desc: 分别控制每个群的自动回复开关，魔改于SpectreCore（作者：23q3），借鉴了Lunabot的autochat # 插件简短描述
+help: 通过/autochat on|off 控制 # 插件的帮助信息
+version: v2.1.11 # 插件版本号。格式：v1.1.1 或者 v1.1
+author: Phantasmic # 作者
+repo: https://github.com/ # 插件的仓库地址
+display_name: openchat
