@@ -8,10 +8,17 @@
 - 其它功能参考SpectreCore（作者：23q3）的使用方法
 
 ## 📥 安装方法
+
+### 方法一
 1. 下载本插件的zip包
 2. 解压到AstrBot的`data/plugins`目录
 3. 安装依赖
 4. 重启AstrBot
+
+### 方法二
+```bash
+git clone https://github.com/Phantasmic-cloud/astrbot_plugin_openchat.git
+```
 
 ## ⚡ 配置环境
 1. Astrbot-普通配置-AI配置
@@ -42,7 +49,7 @@
 2. 配置环境方面，没提到的随意，按自个喜好
 3. 该插件并非原版，而是魔改了SpectreCore（作者：23q3）！多支持原作者谢谢喵
 4. 魔改内容：当仅管理员发“/autochat on|off”时会将当前群里加入|移出 openchat插件配置的“启用回复功能的群聊列表”的白名单
-5. 注意事项：哪怕已经off，所有人仍然可以通过“/chat xxx”与ai对话，只是ai不会主动回复了
+5. 注意事项：哪怕已经off，所有人仍然可以通过“/chat xxx”与ai对话，但是ai不会主动回复了，也不会理睬@bot
 6. 若你已清楚魔改原理，则“配置环境”方面提到的点可按照自己的需求改
 7. 插件仅用于学习和研究目的，请勿用于商业用途
 
