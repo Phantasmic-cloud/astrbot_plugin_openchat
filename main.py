@@ -110,17 +110,13 @@ class SpectreCore(Star):
                     logger.debug(f"已清空事件结果: {event.get_result()}")
 
         except Exception as e:
-            logger.error(f"处理消息发送前事件时发生错误: {e}")
+            logger.error(f"处理消息发送前事件时发生错误: {e}")       
 
-    @filter.command_group("p",alias={''})
-    def spectrecore(self):
-        """插件的前缀/p喵 可以用/代替喵"""
-        pass
-    
+             ###autochat指令逻辑
     @filter.permission_type(filter.PermissionType.ADMIN)
-    @spectrecore.command("autochat")
+    @filter.command("autochat", alias=['聊天']) # 直接注册为顶层指令，触发方式变为 /autochat
     async def autochat(self, event: AstrMessageEvent, action: str):
-        """/autochat on|off"""
+        """/autochat on|off 开启或关闭本群自动回复"""
         try:
             # 检查是否为私聊
             if event.is_private_chat():
@@ -154,7 +150,7 @@ class SpectreCore(Star):
             elif action.lower() == "off":
                 # 检查是否在白名单中
                 if group_id not in enabled_groups:
-                    
+                    yield event.plain_result("本群autochat本来就是关闭的喵~")
                     return
                 # 从白名单移除
                 enabled_groups.remove(group_id)
@@ -168,156 +164,5 @@ class SpectreCore(Star):
         except Exception as e:
             logger.error(f"处理autochat指令时发生错误: {e}")
             yield event.plain_result(f"操作失败喵：{str(e)}")
-        
-    @filter.permission_type(filter.PermissionType.ADMIN)
-    @spectrecore.command("history")
-    async def history(self, event: AstrMessageEvent, count: int = 10):
-        """查看最近的聊天记录，默认10条，示例/history 5"""
-        try:
-            # 获取平台名称
-            platform_name = event.get_platform_name()
-            
-            # 判断是群聊还是私聊
-            is_private = event.is_private_chat()
-            
-            # 获取聊天ID
-            chat_id = event.get_group_id() if not is_private else event.get_sender_id()
-            
-            if not chat_id:
-                yield event.plain_result("获取聊天ID失败喵，无法显示历史记录")
-                return
-                
-            # 获取历史记录
-            history = HistoryStorage.get_history(platform_name, is_private, chat_id)
-            
-            if not history:
-                yield event.plain_result("暂无聊天记录喵")
-                return
-                
-            # 限制记录数量
-            if count > 20:
-                count = 20  # 限制最大显示数量为20条
-            
-            # 只取最近的记录
-            recent_history = history[-count:] if len(history) > count else history
-            
-            # 格式化历史记录
-            formatted_history = await MessageUtils.format_history_for_llm(recent_history, umo=event.unified_msg_origin)
-            
-            # 添加标题
-            chat_type = "私聊" if is_private else f"群聊({chat_id})"
-            title = f"最近{len(recent_history)}条{chat_type}聊天记录喵：\n\n"
-            
-            # 发送结果
-            full_content = title + formatted_history
-            
-            # 如果内容过长，转为图片发送
-            if len(full_content) > 3000:
-                image_url = await self.text_to_image(full_content)
-                yield event.image_result(image_url)
-            else:
-                yield event.plain_result(full_content)
-            
-        except Exception as e:
-            logger.error(f"获取历史记录时发生错误: {e}")
-            yield event.plain_result(f"获取历史记录失败喵：{str(e)}")
-    @filter.permission_type(filter.PermissionType.ADMIN)
-    @spectrecore.command("reset")
-    async def reset(self, event: AstrMessageEvent, group_id: str | None = None):
-        """重置历史记录喵，不带参数重置当前聊天记录，带群号则重置指定群聊记录 如/sc reset 123456"""
-        try:
-            # 获取平台名称
-            platform_name = event.get_platform_name()
-            
-            # 判断是否提供了群号
-            if group_id:
-                # 重置指定群聊的历史记录
-                is_private = False
-                chat_id = group_id
-                chat_type = f"群聊({group_id})"
-            else:
-                # 判断是群聊还是私聊
-                is_private = event.is_private_chat()
-                # 获取聊天ID
-                chat_id = event.get_group_id() if not is_private else event.get_sender_id()
-                chat_type = "私聊" if is_private else f"群聊({chat_id})"
-                
-                if not chat_id:
-                    yield event.plain_result("获取聊天ID失败喵，无法重置历史记录")
-                    return
-            
-            # 先检查是否存在历史记录
-            history = HistoryStorage.get_history(platform_name, is_private, chat_id)
-            if not history:
-                yield event.plain_result(f"{chat_type}没有历史记录喵，无需重置")
-                return
-                
-            # 重置历史记录
-            success = HistoryStorage.clear_history(platform_name, is_private, chat_id)
-            
-            if success:
-                yield event.plain_result(f"已成功重置{chat_type}的历史记录喵~")
-            else:
-                yield event.plain_result(f"重置{chat_type}的历史记录失败喵，可能发生错误")
-                
-        except Exception as e:
-            logger.error(f"重置历史记录时发生错误: {e}")
-            yield event.plain_result(f"重置历史记录失败喵：{str(e)}")
 
-    @filter.permission_type(filter.PermissionType.ADMIN)
-    @spectrecore.command("mute", alias=['闭嘴', 'shutup'])
-    async def mute(self, event: AstrMessageEvent, minutes: int = 5):
-        """临时禁用自动回复，默认5分钟，示例/mute 10 或 /闭嘴 3"""
-        try:
-            # 计算禁用结束时间
-            mute_until = time.time() + (minutes * 60)
-            
-            # 保存到配置中
-            if "_temp_mute" not in self.config:
-                self.config["_temp_mute"] = {}
-            
-            self.config["_temp_mute"]["until"] = mute_until
-            self.config["_temp_mute"]["by"] = event.get_sender_id()
-            self.config["_temp_mute"]["at"] = time.time()
-            
-            # 保存配置
-            self.config.save_config()
-            
-            yield event.plain_result(f"好的，我会闭嘴 {minutes} 分钟的")
-            
-        except Exception as e:
-            logger.error(f"执行闭嘴指令时发生错误: {e}")
-            yield event.plain_result(f"执行闭嘴指令失败喵：{str(e)}")
-
-    @filter.permission_type(filter.PermissionType.ADMIN)
-    @spectrecore.command("unmute", alias=['说话', 'speak'])
-    async def unmute(self, event: AstrMessageEvent):
-        """解除禁用自动回复"""
-        try:
-            # 检查是否处于静默状态
-            mute_info = self.config.get("_temp_mute", {})
-            if not mute_info or mute_info.get("until", 0) <= time.time():
-                yield event.plain_result("我现在本来就在正常说话")
-                return
-            
-            # 解除静默
-            if "_temp_mute" in self.config:
-                del self.config["_temp_mute"]
-                self.config.save_config()
-            
-            yield event.plain_result("又可以话唠了")
-            
-        except Exception as e:
-            logger.error(f"解除闭嘴时发生错误: {e}")
-            yield event.plain_result(f"解除闭嘴失败喵：{str(e)}")
-
-    @filter.permission_type(filter.PermissionType.ADMIN)
-    @spectrecore.command("callllm")
-    async def callllm(self, event: AstrMessageEvent):
-        """触发一次大模型回复 这是用来开发中测试的"""
-        try:
-            # 调用LLM工具类的方法构建并返回请求
-            yield await LLMUtils.call_llm(event, self.config, self.context)
-        except Exception as e:
-            logger.error(f"调用大模型时发生错误: {e}")
-            yield event.plain_result(f"触发大模型回复失败喵：{str(e)}")
+    # 将原版 history, reset, mute, unmute, callllm 函数删除
