@@ -21,16 +21,16 @@ git clone https://github.com/Phantasmic-cloud/astrbot_plugin_openchat.git
 ```
 
 ## ⚡ 配置环境
-1. Astrbot-普通配置-AI配置
+1. AstrBot WeBUI-普通配置-AI配置
     - AI对话总开关（启用）
     - LLM聊天额外唤醒前缀：chat
-2. Astrbot-普通配置-平台配置
+2. AstrBot WeBUI-普通配置-平台配置
     - 管理员ID 必填
     - 唤醒词：/
     - 启用白名单（关闭）
-3. Astrbot-普通配置-扩展功能
+3. AstrBot WeBUI-普通配置-扩展功能
     - 主动回复（关闭）              
-4. Astrbot-插件-Astrbot插件-openchat-⚙️
+4. AstrBot WeBUI-插件-Astrbot插件-openchat-⚙️
     - 回复所有群聊      （关闭）
     - 启用私聊回复功能 （关闭）
     - 是否开启读空气    （启用）
