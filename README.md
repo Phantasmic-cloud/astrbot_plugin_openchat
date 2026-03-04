@@ -1,11 +1,14 @@
 # openchat
 
-分别控制每个群的自动回复开关，魔改于SpectreCore（作者：23q3），借鉴了Lunabot的autochat
+分别控制每个群的自动回复开关，魔改于SpectreCore（作者：23q3），借鉴了一点点Lunabot
+原插件地址为
+```bash
+https://github.com/23q3/astrbot_plugin_SpectreCore.git
+```
 
 ## 🚀 功能介绍
 
 - 可单独控制控制每个群开启自动回复
-- 其它功能参考SpectreCore（作者：23q3）的使用方法
 
 ## 📥 安装方法
 
@@ -37,18 +40,19 @@ git clone https://github.com/Phantasmic-cloud/astrbot_plugin_openchat.git
     - 让模型回复的关键词：必加“[At:bot的QQ号]”
      
 ## 🔧 用法     
+在需要开启自动回复的群聊发送
 ```bash
 /autochat on|off
 ```
 ## 🔧 其它指令
 
-参考SpectreCore（作者：23q3）的用法
+原版插件自带的指令全被移除
 
 ## 📕 后言
 1. 配置环境方面，不懂该插件/原理，提到的点必做
 2. 配置环境方面，没提到的随意，按自个喜好
 3. 该插件并非原版，而是魔改了SpectreCore（作者：23q3）！多支持原作者谢谢喵
-4. 魔改内容：当仅管理员发“/autochat on|off”时会将当前群里加入|移出 openchat插件配置的“启用回复功能的群聊列表”的白名单；移除自带的help指令
+4. 魔改内容：当仅管理员发“/autochat on|off”时会将当前群里加入|移出 openchat插件配置的“启用回复功能的群聊列表”的白名单；移除自带的所有指令
 5. 注意事项：哪怕已经off，所有人仍然可以通过“/chat xxx”与ai对话，但是ai不会主动回复了，也不会理睬@bot
 6. 彻底关掉chat请使用
  ```bash
@@ -56,6 +60,8 @@ git clone https://github.com/Phantasmic-cloud/astrbot_plugin_openchat.git
 ```
 7. 若你已清楚魔改原理，则“配置环境”方面提到的点可按照自己的需求改
 8. 插件仅用于学习和研究目的，请勿用于商业用途
+
+## 作者：Phantasmic
 
 
 ## 📄 许可证
