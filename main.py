@@ -6,13 +6,13 @@ import time
 @register(
     "openchat",
     "Phantasmic",
-    "分别控制每个群的自动回复开关，魔改于SpectreCore（作者：23q3），借鉴了Lunabot的autochat",
-    "2.1.11",
-    "https://github.com/"
+    "分别控制每个群的自动回复开关，魔改于SpectreCore（作者：23q3），借鉴了一点点Lunabot",
+    "1.2.0",
+    "https://github.com/Phantasmic-cloud/astrbot_plugin_openchat/"
 )
 class SpectreCore(Star):
     """
-    分别控制每个群的自动回复开关，魔改于SpectreCore（作者：23q3），借鉴了Lunabot的autochat
+    分别控制每个群的自动回复开关，魔改于SpectreCore（作者：23q3），借鉴了一点点Lunabot
     """
     def __init__(self, context: Context, config: AstrBotConfig):
         super().__init__(context)
